@@ -45,19 +45,13 @@ export default function MemoryBoard({
             <button
               key={card.id}
               onClick={() => gameMode.onCardClick(index)}
-              style={{
-                height: '80px',
-                background: isFlipped ? cardColor : '#333',
-                color: isFlipped ? '#fff' : '#333',
-                border: '2px solid #666',
-                borderRadius: '8px',
-                cursor: card.isMatched ? 'default' : 'pointer',
-                opacity: card.isMatched ? 0.7 : 1,
-                fontWeight: 'bold',
-                textShadow: isFlipped ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'
-              }}
-              className={`chord-button${isFlipped ? ' flipped' : ''}`}
-              data-testid={`card-${index}`}
+              className={
+                `chord-button` +
+                (isFlipped ? ' flipped' : '') +
+                (card.isMatched ? ' matched' : '')
+              }
+              data-testid={`card-${card.id}`}
+              style={isFlipped ? { background: cardColor } : undefined}
             >
               <span className="flip-inner">
                 <span className="flip-front">?</span>
