@@ -79,13 +79,21 @@ export default function PianoMemoryGame() {
     setCurrentColor("");
   };
 
-  const handleCardClick = (cardIndex: number) => {
+  const canFlipCard = (cardIndex: number): boolean => {
     const card = gameCards[cardIndex];
+    // No se puede voltear si ya hay 2 cartas, o si la carta actual ya está emparejada o volteada.
+    if (flippedCards.length >= 2 || card.isMatched || flippedCards.includes(cardIndex)) {
+      return false;
+    }
+    return true;
+  };
 
-    if (flippedCards.length === 2 || card.isFlipped || card.isMatched) {
-      return; // No hacer nada si ya hay 2 cartas volteadas o la carta ya está volteada/emparejada
+  const handleCardClick = (cardIndex: number) => {
+    if (!canFlipCard(cardIndex)) {
+      return;
     }
 
+    const card = gameCards[cardIndex];
     const newFlippedCards = [...flippedCards, cardIndex];
     setFlippedCards(newFlippedCards);
 
