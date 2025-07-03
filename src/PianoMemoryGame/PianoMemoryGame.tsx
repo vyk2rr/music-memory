@@ -4,6 +4,7 @@ import MemoryBoard from "./MemoryBoard/MemoryBoard";
 import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
 import { generateChordsForNote } from "./MemoryBoard/MemoryBoard.utils";
 import "./PianoMemoryGame.css";
+import * as Tone from "tone";
 
 type GameCard = {
   id: string;
@@ -73,7 +74,7 @@ export default function PianoMemoryGame() {
 
   const handleCardClick = (cardIndex: number) => {
     const card = gameCards[cardIndex];
-    
+
     // No permitir clic si la carta ya está emparejada o ya está volteada
     if (card.isMatched || flippedCards.includes(cardIndex)) {
       return;
@@ -94,23 +95,23 @@ export default function PianoMemoryGame() {
     // Si es la segunda carta volteada, verificar coincidencia
     if (newFlippedCards.length === 2) {
       setAttempts(prev => prev + 1);
-      
+
       const firstCard = gameCards[newFlippedCards[0]];
       const secondCard = gameCards[newFlippedCards[1]];
 
       if (firstCard.chord.id === secondCard.chord.id) {
         // Coincidencia encontrada
         setTimeout(() => {
-          setGameCards(prev => prev.map((card, index) => 
-            newFlippedCards.includes(index) 
+          setGameCards(prev => prev.map((card, index) =>
+            newFlippedCards.includes(index)
               ? { ...card, isMatched: true }
               : card
           ));
           setFlippedCards([]);
-          
+
           // Verificar si el juego ha terminado
-          const updatedCards = gameCards.map((card, index) => 
-            newFlippedCards.includes(index) 
+          const updatedCards = gameCards.map((card, index) =>
+            newFlippedCards.includes(index)
               ? { ...card, isMatched: true }
               : card
           );
@@ -129,11 +130,31 @@ export default function PianoMemoryGame() {
     }
   };
 
+  const createDelicateSynth = () => {
+    const synth = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: "triangle" },
+      envelope: {
+        attack: 0.15,
+        decay: 0.2,
+        sustain: 0.2,
+        release: 1.8
+      }
+    });
+    const reverb = new Tone.Reverb({
+      decay: 2.5,
+      preDelay: 0.01,
+      wet: 0.4
+    }).toDestination();
+    synth.connect(reverb);
+    return synth;
+  };
+
   return (
     <>
       <div style={{ backgroundColor: currentColor, padding: "10px" }}>
         <PianoBase
           highlightOnThePiano={currentChord}
+          createSynth={createDelicateSynth}
         />
       </div>
 
