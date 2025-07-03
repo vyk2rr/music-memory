@@ -93,9 +93,7 @@ describe('PianoMemoryGame', () => {
     expect(screen.getByText('Intentos: 0')).toBeInTheDocument();
 
     // Verificar que las 10 cartas están boca abajo
-    const cardButtons = screen.getAllByRole('button').filter(btn =>
-      btn.getAttribute('data-testid')?.startsWith('card-')
-    );
+    const cardButtons = screen.getAllByTestId(/^card-/);
     expect(cardButtons.length).toBe(10);
   });
 
