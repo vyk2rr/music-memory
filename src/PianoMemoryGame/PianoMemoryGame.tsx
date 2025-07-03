@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import PianoBase from "../PianoBase/PianoBase";
 import MemoryBoard from "./MemoryBoard/MemoryBoard";
 import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
@@ -21,9 +21,20 @@ export default function PianoMemoryGame() {
   const [attempts, setAttempts] = useState<number>(0);
   const [gameWon, setGameWon] = useState<boolean>(false);
 
+  const synthRef = useRef<any>(null);
+  const reverbRef = useRef<any>(null);
+
   // Inicializar el juego
   useEffect(() => {
     initializeGame();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      // If you keep refs, dispose here
+      synthRef.current?.dispose();
+      reverbRef.current?.dispose();
+    };
   }, []);
 
   const initializeGame = () => {
@@ -130,7 +141,7 @@ export default function PianoMemoryGame() {
     }
   };
 
-  const createDelicateSynth = () => {
+  const createDelicateSynth = useCallback(() => {
     const synth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: "triangle" },
       envelope: {
@@ -146,8 +157,12 @@ export default function PianoMemoryGame() {
       wet: 0.4
     }).toDestination();
     synth.connect(reverb);
+
+    synthRef.current = synth;
+    reverbRef.current = reverb;
+
     return synth;
-  };
+  }, []);
 
   return (
     <>
