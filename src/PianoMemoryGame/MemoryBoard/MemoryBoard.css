@@ -1,0 +1,88 @@
+.note-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.chord-columns {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.chord-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chord-column h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.chord-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.chord-button.inverted {
+  transform: scale(0.70);
+}
+
+.chord-button:hover {
+  transform: scale(1.05);
+}
+
+.chord-button.selected {
+  background-color: #fff8e1;
+  outline: 3px solid #ffab00;
+  box-shadow:
+    0 0 0 4px rgba(255, 235, 59, 0.5),
+    0 0 18px 8px rgba(255, 213, 79, 0.9),
+    inset 0 0 8px rgba(255, 193, 7, 0.6);
+  color: #000;
+  font-weight: bold;
+  transform: scale(1.03);
+  z-index: 10;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.chord-name {
+  font-weight: bold;
+  font-size: 10px;
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+.chord-notes {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.search-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.chord-search {
+  width: 300px;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chord-search:focus {
+  border-color: #666;
+}
