@@ -36,10 +36,11 @@ export default function PianoMemoryGame() {
     // Filtrar solo acordes básicos (no inversiones) para simplificar
     const basicChords = allChords.filter(chord => !chord.id.includes('_inv'));
 
-    // Seleccionar 5 acordes aleatoriamente
+    // Seleccionar 15 acordes aleatoriamente
+    const howManyChords = 15;
     const selectedChords = basicChords
       .sort(() => Math.random() - 0.5)
-      .slice(0, 15);
+      .slice(0, howManyChords);
 
     // Crear pares de cartas
     const cards: GameCard[] = [];
