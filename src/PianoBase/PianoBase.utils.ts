@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 import type {
-  tOctaveRange, tChordMap, tTime, tChordSequence,
+  tOctaveRange, tChordMap, 
   tNoteWithOctave, tPianoNotes, tPercentString,
   tNoteName,
 } from "./PianoBase.types";

@@ -1,6 +1,5 @@
 /// <reference types="@testing-library/jest-dom" />
 
-import React from 'react';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import PianoMemoryGame from './PianoMemoryGame';
 import * as MemoryBoardUtils from './MemoryBoard/MemoryBoard.utils';
@@ -20,7 +19,7 @@ jest.mock('../PianoBase/PianoBase', () => {
 jest.mock('./MemoryBoard/MemoryBoard', () => {
   return jest.fn(({ gameMode }) => (
     <div data-testid="memory-board">
-      {gameMode.gameCards.map((card, index) => {
+      {gameMode.gameCards.map((card: any, index: number) => {
         const isFlipped = card.isFlipped || card.isMatched || gameMode.flippedCards.includes(index);
         return (
           <button

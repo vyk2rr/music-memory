@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef, RefObject } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import type { RefObject } from 'react';
 import * as Tone from 'tone';
 import type {
   tNoteWithOctave,

@@ -1,4 +1,4 @@
-import { tChord, tNoteWithOctave } from "../PianoBase/PianoBase.types";
+import type { tChord, tNoteWithOctave } from "../PianoBase/PianoBase.types";
 
 type PianoEvent = 
   | { type: "notePlayed", note: tNoteWithOctave }

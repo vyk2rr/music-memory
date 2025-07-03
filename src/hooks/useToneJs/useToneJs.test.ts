@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import useToneJs from './useToneJs';
-import { tChord, tMelodySequence } from '../../PianoBase/PianoBase.types';
+import type { tChord, tMelodySequence } from '../../PianoBase/PianoBase.types';
 
 jest.mock('tone');
 const { triggerAttackReleaseMock, getTransport, getDestination } = require('tone');
