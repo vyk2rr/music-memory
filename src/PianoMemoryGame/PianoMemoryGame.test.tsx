@@ -78,7 +78,7 @@ describe('PianoMemoryGame', () => {
       if (note === 'C') {
         return mockChords;
       }
-      return [];
+      return []; // Devuelve un array vacío para cualquier otra nota
     });
   });
 
