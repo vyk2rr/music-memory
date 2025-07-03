@@ -29,14 +29,17 @@ export default function MemoryBoard({
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', padding: '20px' }}>
         {gameMode.gameCards.map((card, index) => {
           const isFlipped = gameMode.flippedCards.includes(index) || card.isMatched;
+          let cardColor = 'transparent'; // Color por defecto para cartas no volteadas
 
-          // Obtener el color del acorde para la variable CSS
-          const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
-          const cardColor = getChordColor(
-            baseNoteForColor,
-            card.chord.quality,
-            card.chord.chord
-          );
+          // Calcula el color solo si la carta está volteada para optimizar el rendimiento
+          if (isFlipped) {
+            const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
+            cardColor = getChordColor(
+              baseNoteForColor,
+              card.chord.quality,
+              card.chord.chord
+            );
+          }
 
           return (
             <button
