@@ -1,17 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import PianoBase from "../PianoBase/PianoBase";
-import MemoryBoard from "./MemoryBoard/MemoryBoard";
+import MemoryBoard, { type GameCard } from "./MemoryBoard/MemoryBoard";
 import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
-import { generateChordsForNote } from "./MemoryBoard/MemoryBoard.utils";
+import { generateChordsForNote, getChordColor, simplifyNoteName } from "./MemoryBoard/MemoryBoard.utils";
 import "./PianoMemoryGame.css";
 import * as Tone from "tone";
 
-type GameCard = {
-  id: string;
-  chord: tChordWithName;
-  isFlipped: boolean;
-  isMatched: boolean;
-};
+const DEFAULT_CHORD_COUNT = 15;
 
 export default function PianoMemoryGame() {
   const [currentChord, setCurrentChord] = useState<tChord>([]);
@@ -31,48 +26,48 @@ export default function PianoMemoryGame() {
 
   useEffect(() => {
     return () => {
-      // If you keep refs, dispose here
       synthRef.current?.dispose();
       reverbRef.current?.dispose();
     };
   }, []);
 
   const initializeGame = () => {
-    // Generar todos los acordes disponibles
     const allChords: tChordWithName[] = [];
     const notes: ('C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B')[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     notes.forEach(note => {
       allChords.push(...generateChordsForNote(note, 4));
     });
 
-    // Filtrar solo acordes básicos (no inversiones) para simplificar
     const basicChords = allChords.filter(chord => !chord.id.includes('_inv'));
-
-    // Seleccionar 5 acordes aleatoriamente
+    const howMany = Math.min(basicChords.length, DEFAULT_CHORD_COUNT);
     const selectedChords = basicChords
       .sort(() => Math.random() - 0.5)
-      .slice(0, 15);
+      .slice(0, howMany);
 
-    // Crear pares de cartas
     const cards: GameCard[] = [];
     selectedChords.forEach((chord) => {
-      // Primera carta del par
+      const baseNoteForColor = simplifyNoteName(chord.chord[0]);
+      const cardColor = getChordColor(
+        baseNoteForColor,
+        chord.quality,
+        chord.chord
+      );
       cards.push({
         id: `${chord.id}_1`,
         chord,
+        color: cardColor,
         isFlipped: false,
         isMatched: false
       });
-      // Segunda carta del par
       cards.push({
         id: `${chord.id}_2`,
         chord,
+        color: cardColor,
         isFlipped: false,
         isMatched: false
       });
     });
 
-    // Mezclar las cartas
     const shuffledCards = cards.sort(() => Math.random() - 0.5);
 
     setGameCards(shuffledCards);
@@ -83,27 +78,40 @@ export default function PianoMemoryGame() {
     setCurrentColor("");
   };
 
+  const canFlipCard = (cardIndex: number): boolean => {
+    const card = gameCards[cardIndex];
+    // No se puede voltear si ya hay 2 cartas, o si la carta actual ya está emparejada o volteada.
+    if (flippedCards.length >= 2 || card.isMatched || flippedCards.includes(cardIndex)) {
+      return false;
+    }
+    return true;
+  };
+
   const handleCardClick = (cardIndex: number) => {
     const card = gameCards[cardIndex];
 
-    // No permitir clic si la carta ya está emparejada o ya está volteada
-    if (card.isMatched || flippedCards.includes(cardIndex)) {
-      return;
-    }
+    // Siempre reproducir el acorde al hacer clic
+    setCurrentChord([]);
+    setTimeout(() => {
+      setCurrentChord(card.chord.chord);
+    }, 0);
 
-    // No permitir más de 2 cartas volteadas
-    if (flippedCards.length >= 2) {
+    if (!canFlipCard(cardIndex)) {
       return;
     }
 
     const newFlippedCards = [...flippedCards, cardIndex];
     setFlippedCards(newFlippedCards);
 
-    // Mostrar el acorde en el piano
-    setCurrentChord(card.chord.chord);
-    setCurrentColor("#cccccc");
+    // El color del piano, no de las cards
+    const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
+    const newColor = getChordColor(
+      baseNoteForColor,
+      card.chord.quality,
+      card.chord.chord
+    );
+    setCurrentColor(newColor);
 
-    // Si es la segunda carta volteada, verificar coincidencia
     if (newFlippedCards.length === 2) {
       setAttempts(prev => prev + 1);
 
@@ -111,7 +119,6 @@ export default function PianoMemoryGame() {
       const secondCard = gameCards[newFlippedCards[1]];
 
       if (firstCard.chord.id === secondCard.chord.id) {
-        // Coincidencia encontrada
         setTimeout(() => {
           setGameCards(prev => prev.map((card, index) =>
             newFlippedCards.includes(index)
@@ -120,7 +127,6 @@ export default function PianoMemoryGame() {
           ));
           setFlippedCards([]);
 
-          // Verificar si el juego ha terminado
           const updatedCards = gameCards.map((card, index) =>
             newFlippedCards.includes(index)
               ? { ...card, isMatched: true }
@@ -131,7 +137,6 @@ export default function PianoMemoryGame() {
           }
         }, 500);
       } else {
-        // No hay coincidencia, voltear de nuevo después de 1 segundo
         setTimeout(() => {
           setFlippedCards([]);
           setCurrentChord([]);
@@ -166,18 +171,21 @@ export default function PianoMemoryGame() {
 
   return (
     <>
-      <div style={{ backgroundColor: currentColor, padding: "10px" }}>
+      <div 
+        className="piano-container" 
+        style={{ '--piano-background': currentColor } as React.CSSProperties}
+      >
         <PianoBase
           highlightOnThePiano={currentChord}
           createSynth={createDelicateSynth}
         />
       </div>
 
-      <div style={{ padding: "20px", textAlign: "center" }}>
+      <div className="game-info">
         <h2>Memory Game - Acordes de Piano</h2>
         <p>Intentos: {attempts}</p>
-        {gameWon && <p style={{ color: "green", fontSize: "18px" }}>¡Felicidades! Has completado el juego.</p>}
-        <button onClick={initializeGame} style={{ marginBottom: "20px" }}>
+        {gameWon && <p className="win-message">¡Felicidades! Has completado el juego.</p>}
+        <button onClick={initializeGame} className="new-game-button">
           Nuevo Juego
         </button>
       </div>

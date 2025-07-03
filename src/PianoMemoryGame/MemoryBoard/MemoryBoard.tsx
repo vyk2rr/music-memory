@@ -1,10 +1,10 @@
 import type { tChordWithName } from "../../PianoBase/PianoBase.types";
-import { getChordColor, simplifyNoteName } from "./MemoryBoard.utils";
 import "./MemoryBoard.css";
 
 export type GameCard = {
   id: string;
   chord: tChordWithName;
+  color: string;
   isFlipped: boolean;
   isMatched: boolean;
 };
@@ -21,7 +21,7 @@ interface tMemoryBoardProps {
 }
 
 export default function MemoryBoard({
-  gameMode, // Nuevo prop para el modo juego
+  gameMode,
   showNotes = true,
 }: tMemoryBoardProps) {
   if (gameMode) {
@@ -30,40 +30,27 @@ export default function MemoryBoard({
         {gameMode.gameCards.map((card, index) => {
           const isFlipped = gameMode.flippedCards.includes(index) || card.isMatched;
           
-          // Obtener el color del acorde cuando está volteada
-          let cardColor = '#333'; // Color por defecto cuando está boca abajo
-          if (isFlipped) {
-            const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
-            cardColor = getChordColor(
-              baseNoteForColor,
-              card.chord.quality,
-              card.chord.chord
-            );
-          }
-          
+          // Usa el color pre-calculado. Si no está volteada, el CSS se encarga del fondo.
+          const cardColor = card.color;
+
           return (
             <button
               key={card.id}
               onClick={() => gameMode.onCardClick(index)}
-              style={{
-                height: '80px',
-                background: isFlipped ? cardColor : '#333',
-                color: isFlipped ? '#fff' : '#333',
-                border: '2px solid #666',
-                borderRadius: '8px',
-                cursor: card.isMatched ? 'default' : 'pointer',
-                opacity: card.isMatched ? 0.7 : 1,
-                fontWeight: 'bold',
-                textShadow: isFlipped ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'
-              }}
-              className={`chord-button${isFlipped ? ' flipped' : ''}`}
-              data-testid={`card-${index}`}
+              className={
+                `chord-button` +
+                (isFlipped ? ' flipped' : '') +
+                (card.isMatched ? ' matched' : '')
+              }
+              data-testid={`card-${card.id}`}
+              style={{ '--card-background': cardColor } as React.CSSProperties}
+              aria-label={`Card ${index} ${isFlipped ? 'flipped' : 'unflipped'}`}
             >
               <span className="flip-inner">
                 <span className="flip-front">?</span>
                 <span className="flip-back">
                   {card.chord.name}
-                  {showNotes ? <div className="chord-notes">{card.chord.displayNotes}</div> : ''}
+                  {showNotes && <div className="chord-notes">{card.chord.displayNotes}</div>}
                 </span>
               </span>
             </button>

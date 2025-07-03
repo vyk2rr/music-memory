@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import PianoBase from './PianoBase';
@@ -9,7 +10,7 @@ import useHighlight from '../hooks/useHighlight/useHighlight';
 
 // Mock the custom hooks
 jest.mock('../hooks/useToneJs/useToneJs');
-jest.mock('../hooks/useHighlights/useHighlights');
+jest.mock('../hooks/useHighlight/useHighlight');
 
 // Typecast the mock for easier use
 const mockedUseToneJs = useToneJs as jest.Mock;
