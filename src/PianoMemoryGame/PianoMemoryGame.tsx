@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react";
 import PianoBase from "../PianoBase/PianoBase";
-import MemoryBoard from "./MemoryBoard/MemoryBoard";
+import MemoryBoard, { type GameCard } from "./MemoryBoard/MemoryBoard"; // Importa el tipo GameCard
 import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
-import { generateChordsForNote } from "./MemoryBoard/MemoryBoard.utils";
+import { generateChordsForNote, getChordColor, simplifyNoteName } from "./MemoryBoard/MemoryBoard.utils";
 import "./PianoMemoryGame.css";
 
-type GameCard = {
-  id: string;
-  chord: tChordWithName;
-  isFlipped: boolean;
-  isMatched: boolean;
-};
+const DEFAULT_CHORD_COUNT = 15;
+
+// Se elimina la definición local de GameCard de aquí
 
 export default function PianoMemoryGame() {
   const [currentChord, setCurrentChord] = useState<tChord>([]);
@@ -36,18 +33,28 @@ export default function PianoMemoryGame() {
     // Filtrar solo acordes básicos (no inversiones) para simplificar
     const basicChords = allChords.filter(chord => !chord.id.includes('_inv'));
 
-    // Seleccionar 5 acordes aleatoriamente
+    // Seleccionar acordes aleatoriamente, sin exceder el total disponible
+    const howMany = Math.min(basicChords.length, DEFAULT_CHORD_COUNT);
     const selectedChords = basicChords
       .sort(() => Math.random() - 0.5)
-      .slice(0, 5);
+      .slice(0, howMany);
 
     // Crear pares de cartas
     const cards: GameCard[] = [];
     selectedChords.forEach((chord) => {
+      // Calcular el color una sola vez por par de acordes
+      const baseNoteForColor = simplifyNoteName(chord.chord[0]);
+      const cardColor = getChordColor(
+        baseNoteForColor,
+        chord.quality,
+        chord.chord
+      );
+
       // Primera carta del par
       cards.push({
         id: `${chord.id}_1`,
         chord,
+        color: cardColor,
         isFlipped: false,
         isMatched: false
       });
@@ -55,6 +62,7 @@ export default function PianoMemoryGame() {
       cards.push({
         id: `${chord.id}_2`,
         chord,
+        color: cardColor,
         isFlipped: false,
         isMatched: false
       });
@@ -71,25 +79,34 @@ export default function PianoMemoryGame() {
     setCurrentColor("");
   };
 
-  const handleCardClick = (cardIndex: number) => {
+  const canFlipCard = (cardIndex: number): boolean => {
     const card = gameCards[cardIndex];
-    
-    // No permitir clic si la carta ya está emparejada o ya está volteada
-    if (card.isMatched || flippedCards.includes(cardIndex)) {
+    // No se puede voltear si ya hay 2 cartas, o si la carta actual ya está emparejada o volteada.
+    if (flippedCards.length >= 2 || card.isMatched || flippedCards.includes(cardIndex)) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleCardClick = (cardIndex: number) => {
+    if (!canFlipCard(cardIndex)) {
       return;
     }
 
-    // No permitir más de 2 cartas volteadas
-    if (flippedCards.length >= 2) {
-      return;
-    }
-
+    const card = gameCards[cardIndex];
     const newFlippedCards = [...flippedCards, cardIndex];
     setFlippedCards(newFlippedCards);
 
-    // Mostrar el acorde en el piano
+    // Mostrar el acorde en el piano y establecer el color de fondo
     setCurrentChord(card.chord.chord);
-    setCurrentColor("#cccccc");
+    
+    const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
+    const newColor = getChordColor(
+      baseNoteForColor,
+      card.chord.quality,
+      card.chord.chord
+    );
+    setCurrentColor(newColor);
 
     // Si es la segunda carta volteada, verificar coincidencia
     if (newFlippedCards.length === 2) {
@@ -131,17 +148,20 @@ export default function PianoMemoryGame() {
 
   return (
     <>
-      <div style={{ backgroundColor: currentColor, padding: "10px" }}>
+      <div 
+        className="piano-container" 
+        style={{ '--piano-background': currentColor } as React.CSSProperties}
+      >
         <PianoBase
           highlightOnThePiano={currentChord}
         />
       </div>
 
-      <div style={{ padding: "20px", textAlign: "center" }}>
+      <div className="game-info">
         <h2>Memory Game - Acordes de Piano</h2>
         <p>Intentos: {attempts}</p>
-        {gameWon && <p style={{ color: "green", fontSize: "18px" }}>¡Felicidades! Has completado el juego.</p>}
-        <button onClick={initializeGame} style={{ marginBottom: "20px" }}>
+        {gameWon && <p className="win-message">¡Felicidades! Has completado el juego.</p>}
+        <button onClick={initializeGame} className="new-game-button">
           Nuevo Juego
         </button>
       </div>
