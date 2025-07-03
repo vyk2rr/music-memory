@@ -1,18 +1,13 @@
 import { useState, useEffect } from "react";
 import PianoBase from "../PianoBase/PianoBase";
-import MemoryBoard from "./MemoryBoard/MemoryBoard";
+import MemoryBoard, { type GameCard } from "./MemoryBoard/MemoryBoard"; // Importa el tipo GameCard
 import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
 import { generateChordsForNote, getChordColor, simplifyNoteName } from "./MemoryBoard/MemoryBoard.utils";
 import "./PianoMemoryGame.css";
 
 const DEFAULT_CHORD_COUNT = 15;
 
-type GameCard = {
-  id: string;
-  chord: tChordWithName;
-  isFlipped: boolean;
-  isMatched: boolean;
-};
+// Se elimina la definición local de GameCard de aquí
 
 export default function PianoMemoryGame() {
   const [currentChord, setCurrentChord] = useState<tChord>([]);
@@ -47,10 +42,19 @@ export default function PianoMemoryGame() {
     // Crear pares de cartas
     const cards: GameCard[] = [];
     selectedChords.forEach((chord) => {
+      // Calcular el color una sola vez por par de acordes
+      const baseNoteForColor = simplifyNoteName(chord.chord[0]);
+      const cardColor = getChordColor(
+        baseNoteForColor,
+        chord.quality,
+        chord.chord
+      );
+
       // Primera carta del par
       cards.push({
         id: `${chord.id}_1`,
         chord,
+        color: cardColor,
         isFlipped: false,
         isMatched: false
       });
@@ -58,6 +62,7 @@ export default function PianoMemoryGame() {
       cards.push({
         id: `${chord.id}_2`,
         chord,
+        color: cardColor,
         isFlipped: false,
         isMatched: false
       });

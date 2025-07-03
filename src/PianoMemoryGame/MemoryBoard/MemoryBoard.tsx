@@ -1,10 +1,10 @@
 import type { tChordWithName } from "../../PianoBase/PianoBase.types";
-import { getChordColor, simplifyNoteName } from "./MemoryBoard.utils";
 import "./MemoryBoard.css";
 
 export type GameCard = {
   id: string;
   chord: tChordWithName;
+  color: string;
   isFlipped: boolean;
   isMatched: boolean;
 };
@@ -21,7 +21,7 @@ interface tMemoryBoardProps {
 }
 
 export default function MemoryBoard({
-  gameMode, // Nuevo prop para el modo juego
+  gameMode,
   showNotes = true,
 }: tMemoryBoardProps) {
   if (gameMode) {
@@ -29,17 +29,9 @@ export default function MemoryBoard({
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', padding: '20px' }}>
         {gameMode.gameCards.map((card, index) => {
           const isFlipped = gameMode.flippedCards.includes(index) || card.isMatched;
-          let cardColor = 'transparent'; // Color por defecto para cartas no volteadas
-
-          // Calcula el color solo si la carta está volteada para optimizar el rendimiento
-          if (isFlipped) {
-            const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
-            cardColor = getChordColor(
-              baseNoteForColor,
-              card.chord.quality,
-              card.chord.chord
-            );
-          }
+          
+          // Usa el color pre-calculado. Si no está volteada, el CSS se encarga del fondo.
+          const cardColor = card.color;
 
           return (
             <button

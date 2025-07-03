@@ -4,17 +4,19 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import MemoryBoard from './MemoryBoard';
 import type { tChordWithName } from '../../PianoBase/PianoBase.types';
 
-// Mock de datos para las pruebas
+// Mock de datos para las pruebas (actualizado con la propiedad 'color')
 const mockGameCards = [
   {
     id: 'C4_maj_1',
     chord: { id: 'C4_maj', name: 'Cmaj', chord: ['C4', 'E4', 'G4'], displayNotes: 'C E G', quality: 'maj', rootNote: 'C' } as tChordWithName,
+    color: 'hsl(0, 70%, 50%)', // Añadido color de ejemplo
     isFlipped: true,
     isMatched: false,
   },
   {
     id: 'C4_maj_2',
     chord: { id: 'C4_maj', name: 'Cmaj', chord: ['C4', 'E4', 'G4'], displayNotes: 'C E G', quality: 'maj', rootNote: 'C' } as tChordWithName,
+    color: 'hsl(0, 70%, 50%)', // Añadido color de ejemplo
     isFlipped: false,
     isMatched: false,
   },
