@@ -16,8 +16,8 @@ export default function PianoMemoryGame() {
   const [attempts, setAttempts] = useState<number>(0);
   const [gameWon, setGameWon] = useState<boolean>(false);
 
-  const synthRef = useRef<any>(null);
-  const reverbRef = useRef<any>(null);
+  const synthRef = useRef<Tone.PolySynth | null>(null);
+  const reverbRef = useRef<Tone.Reverb | null>(null);
 
   // Inicializar el juego
   useEffect(() => {
