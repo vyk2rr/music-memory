@@ -29,7 +29,7 @@ export default function MemoryBoard({
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', padding: '20px' }}>
         {gameMode.gameCards.map((card, index) => {
           const isFlipped = gameMode.flippedCards.includes(index) || card.isMatched;
-          
+
           // Obtener el color del acorde cuando está volteada
           let cardColor = '#333'; // Color por defecto cuando está boca abajo
           if (isFlipped) {
@@ -40,7 +40,7 @@ export default function MemoryBoard({
               card.chord.chord
             );
           }
-          
+
           return (
             <button
               key={card.id}
@@ -63,7 +63,7 @@ export default function MemoryBoard({
                 <span className="flip-front">?</span>
                 <span className="flip-back">
                   {card.chord.name}
-                  {showNotes ? <div className="chord-notes">{card.chord.displayNotes}</div> : ''}
+                  {showNotes && <div className="chord-notes">{card.chord.displayNotes}</div>}
                 </span>
               </span>
             </button>
