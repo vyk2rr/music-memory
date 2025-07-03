@@ -5,7 +5,7 @@ import type { PianoBaseHandle } from './PianoBase';
 import { PianoObserver } from '../PianoObserver/PianoObserver';
 import type { iChordEvent, tNoteWithOctave, tMelodySequence } from './PianoBase.types';
 import useToneJs from '../hooks/useToneJs/useToneJs';
-import useHighlight from '../hooks/useHighlight/useHighlights;
+import useHighlight from '../hooks/useHighlight/useHighlight';
 
 // Mock the custom hooks
 jest.mock('../hooks/useToneJs/useToneJs');
