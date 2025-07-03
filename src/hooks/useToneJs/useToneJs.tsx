@@ -39,7 +39,7 @@ interface iToneJsHookReturn {
   ) => void;
 }
 
-export default function huseToneJs({
+export default function useToneJs({
   createSynth,
   onReady,
   bpm = 120

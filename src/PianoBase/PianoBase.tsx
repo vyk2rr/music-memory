@@ -2,7 +2,7 @@ import React, { useEffect, useImperativeHandle, forwardRef } from "react";
 import { generateNotes, getAlternativeNotation, getBlackKeyLeft, getBlackKeyWidth } from "./PianoBase.utils";
 import type { tChord, tOctaveRange, tNoteWithOctave, tSequenceToPlayProps, iChordEvent, tMelodySequence } from "./PianoBase.types";
 import type { PianoObserver } from "../PianoObserver/PianoObserver";
-import useHighlight from "./../hooks/useHighlights/useHighlights";
+import useHighlight from "../hooks/useHighlight/useHighlight";
 import useToneJs from "../hooks/useToneJs/useToneJs";
 import type { SupportedSynthType } from "../hooks/useToneJs/useToneJs";
 import './PianoBase.css';

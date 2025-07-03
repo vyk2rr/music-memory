@@ -15,15 +15,15 @@ type GameMode = {
   onCardClick: (cardIndex: number) => void;
 };
 
-interface tChordPaletteProps {
+interface tMemoryBoardProps {
   gameMode?: GameMode; // Nuevo prop para el modo juego
   showNotes?: boolean;
 }
 
-export default function ChordPalette({
+export default function MemoryBoard({
   gameMode, // Nuevo prop para el modo juego
   showNotes = true,
-}: tChordPaletteProps) {
+}: tMemoryBoardProps) {
   if (gameMode) {
     return (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', padding: '20px' }}>

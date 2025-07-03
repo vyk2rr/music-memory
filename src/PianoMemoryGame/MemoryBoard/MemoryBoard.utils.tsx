@@ -143,27 +143,6 @@ export function getChordColor(
   return `hsl(${rootHue.toFixed(0)}, ${overallChordSaturation.toFixed(0)}%, ${overallChordLightness.toFixed(0)}%)`;
 }
 
-
-export function extractNotesFromSearchTerm(term: string): string[] {
-  return (term.match(/([A-G][#b]?)/gi) || []).map(n => n.toUpperCase());
-}
-
-export const filterChords = (chords: tChordWithName[], searchTerm: string): tChordWithName[] => {
-  if (!searchTerm) return chords;
-  const upperTerm = searchTerm.toUpperCase();
-  const searchNotes:string[] = extractNotesFromSearchTerm(upperTerm);
-  if (searchNotes.length > 0) {
-    return chords.filter(chord => {
-      const chordNoteNames = chord.chord.map(simplifyNoteName);
-      return searchNotes.every(n => chordNoteNames.includes(n as tNoteName));
-    });
-  }
-  return chords.filter(chord =>
-    chord.name.toUpperCase().includes(upperTerm) ||
-    chord.displayNotes.toUpperCase().includes(upperTerm)
-  );
-};
-
 export function buildBaseChord(note: tNoteWithOctave, type: tChordQualities): tChordWithName {
   const rootFrequency = calculateChordNotes(note, type);
   const baseNoteNameValue: tNoteName = simplifyNoteName(note);
