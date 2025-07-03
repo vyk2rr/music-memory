@@ -5,6 +5,8 @@ import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
 import { generateChordsForNote } from "./MemoryBoard/MemoryBoard.utils";
 import "./PianoMemoryGame.css";
 
+const HOW_MANY_CHORDS = 15;
+
 type GameCard = {
   id: string;
   chord: tChordWithName;
@@ -36,11 +38,11 @@ export default function PianoMemoryGame() {
     // Filtrar solo acordes básicos (no inversiones) para simplificar
     const basicChords = allChords.filter(chord => !chord.id.includes('_inv'));
 
-    // Seleccionar 15 acordes aleatoriamente
-    const howManyChords = 15;
+    // Seleccionar acordes aleatoriamente, sin exceder el total disponible
+    const howMany = Math.min(basicChords.length, HOW_MANY_CHORDS);
     const selectedChords = basicChords
       .sort(() => Math.random() - 0.5)
-      .slice(0, howManyChords);
+      .slice(0, howMany);
 
     // Crear pares de cartas
     const cards: GameCard[] = [];
