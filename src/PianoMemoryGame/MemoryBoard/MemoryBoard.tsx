@@ -2,7 +2,7 @@ import type { tChordWithName } from "../../PianoBase/PianoBase.types";
 import { getChordColor, simplifyNoteName } from "./MemoryBoard.utils";
 import "./MemoryBoard.css";
 
-type GameCard = {
+export type GameCard = {
   id: string;
   chord: tChordWithName;
   isFlipped: boolean;
