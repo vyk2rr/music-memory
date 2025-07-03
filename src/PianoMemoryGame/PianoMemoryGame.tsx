@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PianoBase from "../PianoBase/PianoBase";
 import MemoryBoard from "./MemoryBoard/MemoryBoard";
 import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
-import { generateChordsForNote } from "./MemoryBoard/MemoryBoard.utils";
+import { generateChordsForNote, getChordColor, simplifyNoteName } from "./MemoryBoard/MemoryBoard.utils";
 import "./PianoMemoryGame.css";
 
 const HOW_MANY_CHORDS = 15;
@@ -76,23 +76,24 @@ export default function PianoMemoryGame() {
 
   const handleCardClick = (cardIndex: number) => {
     const card = gameCards[cardIndex];
-    
-    // No permitir clic si la carta ya está emparejada o ya está volteada
-    if (card.isMatched || flippedCards.includes(cardIndex)) {
-      return;
-    }
 
-    // No permitir más de 2 cartas volteadas
-    if (flippedCards.length >= 2) {
-      return;
+    if (flippedCards.length === 2 || card.isFlipped || card.isMatched) {
+      return; // No hacer nada si ya hay 2 cartas volteadas o la carta ya está volteada/emparejada
     }
 
     const newFlippedCards = [...flippedCards, cardIndex];
     setFlippedCards(newFlippedCards);
 
-    // Mostrar el acorde en el piano
+    // Mostrar el acorde en el piano y establecer el color de fondo
     setCurrentChord(card.chord.chord);
-    setCurrentColor("#cccccc");
+    
+    const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
+    const newColor = getChordColor(
+      baseNoteForColor,
+      card.chord.quality,
+      card.chord.chord
+    );
+    setCurrentColor(newColor);
 
     // Si es la segunda carta volteada, verificar coincidencia
     if (newFlippedCards.length === 2) {
@@ -134,17 +135,18 @@ export default function PianoMemoryGame() {
 
   return (
     <>
-      <div style={{ backgroundColor: currentColor, padding: "10px" }}>
+      <div className="piano-container" style={{ background: currentColor }}>
+        <p>currentColor: {currentColor}</p>
         <PianoBase
           highlightOnThePiano={currentChord}
         />
       </div>
 
-      <div style={{ padding: "20px", textAlign: "center" }}>
+      <div className="game-info">
         <h2>Memory Game - Acordes de Piano</h2>
         <p>Intentos: {attempts}</p>
-        {gameWon && <p style={{ color: "green", fontSize: "18px" }}>¡Felicidades! Has completado el juego.</p>}
-        <button onClick={initializeGame} style={{ marginBottom: "20px" }}>
+        {gameWon && <p className="win-message">¡Felicidades! Has completado el juego.</p>}
+        <button onClick={initializeGame} className="new-game-button">
           Nuevo Juego
         </button>
       </div>

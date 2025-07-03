@@ -113,6 +113,10 @@
 
 .chord-button .flip-front {
   z-index: 2;
+  /* Añade estas líneas para hacer visible y centrar el '?' */
+  color: #fff; /* O un color claro que te guste */
+  font-size: 2.5em; /* Aumenta el tamaño para que se vea mejor */
+  justify-content: center; /* Centra el '?' horizontalmente */
 }
 
 .chord-button .flip-back {

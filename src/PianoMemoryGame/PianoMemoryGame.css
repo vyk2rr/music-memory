@@ -90,3 +90,23 @@
 .chord-search:focus {
   border-color: #666;
 }
+
+.piano-container {
+  padding: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.game-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.win-message {
+  color: green;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.new-game-button {
+  margin-bottom: 20px;
+}
