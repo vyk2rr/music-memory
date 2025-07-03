@@ -1,9 +1,9 @@
 Interactive musical memory game with piano chords. Built in React and TypeScript. Challenge your ear, logic, memory, and musical learning. <a href="https://vyk2rr.github.io/music-memory/">try it here</a>
 
-- Youtube Demo: https://youtu.be/XXG56ULjIf8
+- Youtube Demo: [https://youtu.be/XXG56ULjIf8](https://youtu.be/lE84FxE48MQ)
 - Demo: https://vyk2rr.github.io/music-memory/
 
-<a href="https://youtu.be/XXG56ULjIf8"><img width="1463" alt="image" src="https://github.com/user-attachments/assets/ac7b749d-ca88-4c07-95c6-dd45c8834aac" /></a>
+<a href="https://youtu.be/lE84FxE48MQ"><img width="1463" alt="image" src="https://github.com/user-attachments/assets/ac7b749d-ca88-4c07-95c6-dd45c8834aac" /></a>
 
 
 ### 🧰 Tech Stack
