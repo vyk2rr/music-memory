@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import PianoBase from "../PianoBase/PianoBase";
-import MemoryBoard, { type GameCard } from "./MemoryBoard/MemoryBoard"; // Importa el tipo GameCard
+import MemoryBoard, { type GameCard } from "./MemoryBoard/MemoryBoard";
 import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
 import { generateChordsForNote, getChordColor, simplifyNoteName } from "./MemoryBoard/MemoryBoard.utils";
 import "./PianoMemoryGame.css";
+import * as Tone from "tone";
 
 const DEFAULT_CHORD_COUNT = 15;
-
-// Se elimina la definición local de GameCard de aquí
 
 export default function PianoMemoryGame() {
   const [currentChord, setCurrentChord] = useState<tChord>([]);
@@ -17,40 +16,42 @@ export default function PianoMemoryGame() {
   const [attempts, setAttempts] = useState<number>(0);
   const [gameWon, setGameWon] = useState<boolean>(false);
 
+  const synthRef = useRef<Tone.PolySynth | null>(null);
+  const reverbRef = useRef<Tone.Reverb | null>(null);
+
   // Inicializar el juego
   useEffect(() => {
     initializeGame();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      synthRef.current?.dispose();
+      reverbRef.current?.dispose();
+    };
+  }, []);
+
   const initializeGame = () => {
-    // Generar todos los acordes disponibles
     const allChords: tChordWithName[] = [];
     const notes: ('C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B')[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     notes.forEach(note => {
       allChords.push(...generateChordsForNote(note, 4));
     });
 
-    // Filtrar solo acordes básicos (no inversiones) para simplificar
     const basicChords = allChords.filter(chord => !chord.id.includes('_inv'));
-
-    // Seleccionar acordes aleatoriamente, sin exceder el total disponible
     const howMany = Math.min(basicChords.length, DEFAULT_CHORD_COUNT);
     const selectedChords = basicChords
       .sort(() => Math.random() - 0.5)
       .slice(0, howMany);
 
-    // Crear pares de cartas
     const cards: GameCard[] = [];
     selectedChords.forEach((chord) => {
-      // Calcular el color una sola vez por par de acordes
       const baseNoteForColor = simplifyNoteName(chord.chord[0]);
       const cardColor = getChordColor(
         baseNoteForColor,
         chord.quality,
         chord.chord
       );
-
-      // Primera carta del par
       cards.push({
         id: `${chord.id}_1`,
         chord,
@@ -58,7 +59,6 @@ export default function PianoMemoryGame() {
         isFlipped: false,
         isMatched: false
       });
-      // Segunda carta del par
       cards.push({
         id: `${chord.id}_2`,
         chord,
@@ -68,7 +68,6 @@ export default function PianoMemoryGame() {
       });
     });
 
-    // Mezclar las cartas
     const shuffledCards = cards.sort(() => Math.random() - 0.5);
 
     setGameCards(shuffledCards);
@@ -89,17 +88,22 @@ export default function PianoMemoryGame() {
   };
 
   const handleCardClick = (cardIndex: number) => {
+    const card = gameCards[cardIndex];
+
+    // Siempre reproducir el acorde al hacer clic
+    setCurrentChord([]);
+    setTimeout(() => {
+      setCurrentChord(card.chord.chord);
+    }, 0);
+
     if (!canFlipCard(cardIndex)) {
       return;
     }
 
-    const card = gameCards[cardIndex];
     const newFlippedCards = [...flippedCards, cardIndex];
     setFlippedCards(newFlippedCards);
 
-    // Mostrar el acorde en el piano y establecer el color de fondo
-    setCurrentChord(card.chord.chord);
-    
+    // El color del piano, no de las cards
     const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
     const newColor = getChordColor(
       baseNoteForColor,
@@ -108,26 +112,23 @@ export default function PianoMemoryGame() {
     );
     setCurrentColor(newColor);
 
-    // Si es la segunda carta volteada, verificar coincidencia
     if (newFlippedCards.length === 2) {
       setAttempts(prev => prev + 1);
-      
+
       const firstCard = gameCards[newFlippedCards[0]];
       const secondCard = gameCards[newFlippedCards[1]];
 
       if (firstCard.chord.id === secondCard.chord.id) {
-        // Coincidencia encontrada
         setTimeout(() => {
-          setGameCards(prev => prev.map((card, index) => 
-            newFlippedCards.includes(index) 
+          setGameCards(prev => prev.map((card, index) =>
+            newFlippedCards.includes(index)
               ? { ...card, isMatched: true }
               : card
           ));
           setFlippedCards([]);
-          
-          // Verificar si el juego ha terminado
-          const updatedCards = gameCards.map((card, index) => 
-            newFlippedCards.includes(index) 
+
+          const updatedCards = gameCards.map((card, index) =>
+            newFlippedCards.includes(index)
               ? { ...card, isMatched: true }
               : card
           );
@@ -136,7 +137,6 @@ export default function PianoMemoryGame() {
           }
         }, 500);
       } else {
-        // No hay coincidencia, voltear de nuevo después de 1 segundo
         setTimeout(() => {
           setFlippedCards([]);
           setCurrentChord([]);
@@ -146,6 +146,29 @@ export default function PianoMemoryGame() {
     }
   };
 
+  const createDelicateSynth = useCallback(() => {
+    const synth = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: "triangle" },
+      envelope: {
+        attack: 0.15,
+        decay: 0.2,
+        sustain: 0.2,
+        release: 1.8
+      }
+    });
+    const reverb = new Tone.Reverb({
+      decay: 2.5,
+      preDelay: 0.01,
+      wet: 0.4
+    }).toDestination();
+    synth.connect(reverb);
+
+    synthRef.current = synth;
+    reverbRef.current = reverb;
+
+    return synth;
+  }, []);
+
   return (
     <>
       <div 
@@ -154,6 +177,7 @@ export default function PianoMemoryGame() {
       >
         <PianoBase
           highlightOnThePiano={currentChord}
+          createSynth={createDelicateSynth}
         />
       </div>
 
