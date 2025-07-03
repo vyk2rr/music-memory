@@ -56,9 +56,16 @@ export default function MemoryBoard({
                 fontWeight: 'bold',
                 textShadow: isFlipped ? '1px 1px 2px rgba(0,0,0,0.5)' : 'none'
               }}
+              className={`chord-button${isFlipped ? ' flipped' : ''}`}
+              data-testid={`card-${index}`}
             >
-              {isFlipped ? card.chord.name : '?'}
-              {showNotes ? <div className="chord-notes">{card.chord.displayNotes}</div> : ''}
+              <span className="flip-inner">
+                <span className="flip-front">?</span>
+                <span className="flip-back">
+                  {card.chord.name}
+                  {showNotes ? <div className="chord-notes">{card.chord.displayNotes}</div> : ''}
+                </span>
+              </span>
             </button>
           );
         })}

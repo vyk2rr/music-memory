@@ -39,7 +39,7 @@ export default function PianoMemoryGame() {
     // Seleccionar 5 acordes aleatoriamente
     const selectedChords = basicChords
       .sort(() => Math.random() - 0.5)
-      .slice(0, 5);
+      .slice(0, 15);
 
     // Crear pares de cartas
     const cards: GameCard[] = [];
