@@ -30,16 +30,13 @@ export default function MemoryBoard({
         {gameMode.gameCards.map((card, index) => {
           const isFlipped = gameMode.flippedCards.includes(index) || card.isMatched;
 
-          // Obtener el color del acorde cuando está volteada
-          let cardColor = '#333'; // Color por defecto cuando está boca abajo
-          if (isFlipped) {
-            const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
-            cardColor = getChordColor(
-              baseNoteForColor,
-              card.chord.quality,
-              card.chord.chord
-            );
-          }
+          // Obtener el color del acorde para la variable CSS
+          const baseNoteForColor = simplifyNoteName(card.chord.chord[0]);
+          const cardColor = getChordColor(
+            baseNoteForColor,
+            card.chord.quality,
+            card.chord.chord
+          );
 
           return (
             <button
@@ -51,7 +48,7 @@ export default function MemoryBoard({
                 (card.isMatched ? ' matched' : '')
               }
               data-testid={`card-${card.id}`}
-              style={isFlipped ? { background: cardColor } : undefined}
+              style={{ '--card-background': cardColor } as React.CSSProperties}
               aria-label={`Card ${index} ${isFlipped ? 'flipped' : 'unflipped'}`}
             >
               <span className="flip-inner">

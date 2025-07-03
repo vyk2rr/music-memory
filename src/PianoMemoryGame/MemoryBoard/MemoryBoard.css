@@ -46,10 +46,6 @@
   color: #333;
 }
 
-.chord-button.inverted {
-  transform: scale(0.70);
-}
-
 .chord-button:hover {
   transform: scale(1.05);
 }
@@ -113,17 +109,15 @@
 
 .chord-button .flip-front {
   z-index: 2;
-  /* Añade estas líneas para hacer visible y centrar el '?' */
-  color: #fff; /* O un color claro que te guste */
-  font-size: 2.5em; /* Aumenta el tamaño para que se vea mejor */
-  justify-content: center; /* Centra el '?' horizontalmente */
+  color: #fff; 
+  font-size: 2.5em;
+  justify-content: center; 
 }
 
 .chord-button .flip-back {
+  background: var(--card-background, #f0f0f0); 
   transform: rotateY(180deg);
-  z-index: 3;
-  background: #444;
-  color: #fff;
+  display: flex;
   flex-direction: column;
 }
 
