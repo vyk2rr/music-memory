@@ -136,7 +136,6 @@ export default function PianoMemoryGame() {
   return (
     <>
       <div className="piano-container" style={{ background: currentColor }}>
-        <p>currentColor: {currentColor}</p>
         <PianoBase
           highlightOnThePiano={currentChord}
         />
