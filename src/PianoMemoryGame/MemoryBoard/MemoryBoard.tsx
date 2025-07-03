@@ -52,6 +52,7 @@ export default function MemoryBoard({
               }
               data-testid={`card-${card.id}`}
               style={isFlipped ? { background: cardColor } : undefined}
+              aria-label={`Card ${index} ${isFlipped ? 'flipped' : 'unflipped'}`}
             >
               <span className="flip-inner">
                 <span className="flip-front">?</span>
