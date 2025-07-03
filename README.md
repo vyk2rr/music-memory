@@ -7,10 +7,10 @@ Interactive musical memory game with piano chords. Built in React and TypeScript
 
 
 ### 🧰 Tech Stack
-Tone.js – Audio synthesis
-Vite – Dev/build tool
-React.js - Javascript Framework
-Typescript - Javascript with superpowers
+- Tone.js – Audio synthesis
+- Vite – Dev/build tool
+- React.js - Javascript Framework
+- Typescript - Javascript with superpowers
 
 ### React + TypeScript + Vite
 Dev Readme => <a href="https://github.com/vyk2rr/music-memory/blob/main/README.dev.md">README.dev.md</a>
