@@ -25,7 +25,17 @@
   box-sizing: border-box;
   position: relative;
   z-index: 1;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0 0 100px 100px; 
+}
+
+.white-key::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #f5ebea;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Black keys row (overlay) */
