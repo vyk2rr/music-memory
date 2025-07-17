@@ -51,7 +51,7 @@
 }
 
 .active-key {
-  background: #ffe082 !important;
+  background: #ffe082;
   box-shadow: 0 0 10px #ffd54f;
 }
 
@@ -105,8 +105,8 @@
 
 .white-key.highlight-group-1 .note-name,
 .black-key.highlight-group-1 .note-name {
-  color: white !important;
-  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 /* Bajos/Armonía - Grupo 2 (Lavanda Pastel) */
@@ -119,8 +119,8 @@
 
 .white-key.highlight-group-2 .note-name,
 .black-key.highlight-group-2 .note-name {
-  color: white !important;
-  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .key .note-name {

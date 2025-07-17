@@ -10,9 +10,9 @@ import type { PianoObserver } from "../PianoObserver/PianoObserver";
 import useHighlight from "../hooks/useHighlight/useHighlight";
 import useToneJs from "../hooks/useToneJs/useToneJs";
 import type { SupportedSynthType } from "../hooks/useToneJs/useToneJs";
-import './PianoBase.css';
+// import './PianoBase.css';
 // import './PianoBaseWithDress.css';
-// import './PianoBaseWithoutDress1.css';
+import './PianoBaseWithoutDress1.css';
 
 
 export interface PianoBaseProps {
